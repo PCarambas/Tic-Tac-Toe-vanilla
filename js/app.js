@@ -9,11 +9,16 @@ const App = {
         squares: document.querySelectorAll('[data-id="square"]'),
     },
 
+        state: {
+
+        },
 
     init() {
+        App.registerEventListeners()
+    },
 
-        console.log(App.$.squares);   
-
+    registerEventListeners() {  
+        
         App.$.menu.addEventListener("click", (event) => {
             App.$.menuItems.classList.toggle("hidden");
         });
@@ -28,11 +33,32 @@ const App = {
 
         App.$.squares.forEach((square) => {
             square.addEventListener("click", (event) => {
-                console.log(`Square with id ${event.target.id} was clicked`);
-            })
-        })
+
+                if (square.hasChildNodes()) {
+                    return
+                };
+
+                const currentPlayer = App.state.currentPlayer
+
+                const icon = document.createElement("i");
+
+                if(currentPlayer === 1) {
+                    icon.classList.add("fa-solid", "fa-x", "yellow");
+                }else {
+                    icon.classList.add("fa-solid", "fa-o", "turquoise");
+                }
+
+                App.state.currentPlayer = App.state.currentPlayer === 1 ? 2 : 1
+                
+                square.replaceChildren(icon);
+            });
+        });
+
     },
 };
 
-
+/*When window loads the document it will call App.init, then init will register 
+all the event listeners. Helps organize and keep code clean*/
 window.addEventListener("load", App.init);
+
+               
