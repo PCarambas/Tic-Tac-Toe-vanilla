@@ -10,7 +10,7 @@ const App = {
     },
 
         state: {
-
+            moves: [],
         },
 
     init() {
@@ -34,11 +34,19 @@ const App = {
         App.$.squares.forEach((square) => {
             square.addEventListener("click", (event) => {
 
-                if (square.hasChildNodes()) {
-                    return
-                };
+                const hasMove = (squareId) => {
+                    const existingMove = App.state.moves.find(move => move.squareId === squareId)
+                    return existingMove !== undefined
+                }
 
-                const currentPlayer = App.state.currentPlayer
+                if (hasMove(+square.id)) {
+                    return;
+                }
+
+                const lastMove = App.state.moves.at(-1)
+                const  getOppositePlayer = (playerId) => (playerId === 1 ? 2 : 1);
+                const currentPlayer = 
+                App.state.moves.length === 0 ? 1 : getOppositePlayer(lastMove.playerId);
 
                 const icon = document.createElement("i");
 
@@ -48,9 +56,29 @@ const App = {
                     icon.classList.add("fa-solid", "fa-o", "turquoise");
                 }
 
-                App.state.currentPlayer = App.state.currentPlayer === 1 ? 2 : 1
                 
+                App.state.moves.push({
+                    squareId: +square.id,
+                    playerId: currentPlayer
+                })
+
+                App.state.currentPlayer = currentPlayer === 1 ? 2 : 1;
+
+                console.log(App.state);
+
                 square.replaceChildren(icon);
+
+                const winningPatterns = [
+                    [1, 2, 3],
+                    [1, 5, 9],
+                    [1, 4, 7],
+                    [2, 5, 8],
+                    [3, 5, 7],
+                    [3, 6, 9],
+                    [4, 5, 6],
+                    [7, 8, 9],
+                  ];
+
             });
         });
 
